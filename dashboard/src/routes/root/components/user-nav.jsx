@@ -30,8 +30,8 @@ export function UserNav() {
 					<Link to="/settings">Settings</Link>
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem onClick={() => console.log('clicked')}>
-					Log out
+				<DropdownMenuItem onClick={() => console.log('sign out')}>
+					Sign out
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
