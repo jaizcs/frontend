@@ -1,6 +1,7 @@
 import { createBrowserRouter, redirect } from 'react-router-dom';
 import RootRoute from './routes/root';
 import SupportTicketsRoute from './routes/support-tickets';
+import SignInRoute from './routes/sign-in';
 
 export const router = createBrowserRouter([
 	{
@@ -10,6 +11,7 @@ export const router = createBrowserRouter([
 		path: '/',
 	},
 	{
+		element: <SignInRoute />,
 		path: '/sign-in',
 	},
 	{
