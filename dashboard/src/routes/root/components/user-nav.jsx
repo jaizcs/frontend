@@ -26,11 +26,17 @@ export function UserNav() {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-56" align="end" forceMount>
-				<DropdownMenuItem>
-					<Link to="/settings">Settings</Link>
+				<DropdownMenuItem
+					onClick={() => console.log('settings')}
+					className="cursor-pointer"
+				>
+					Settings
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem onClick={() => console.log('sign out')}>
+				<DropdownMenuItem
+					onClick={() => console.log('sign out')}
+					className="cursor-pointer"
+				>
 					Sign out
 				</DropdownMenuItem>
 			</DropdownMenuContent>
