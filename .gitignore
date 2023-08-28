@@ -3,6 +3,7 @@
 **/.env
 **/.env.*
 !**/.env.example
+**/.next
 **/coverage
 **/dist
 **/node_modules

@@ -40,16 +40,22 @@ export function DataTableColumnHeader({ column, title, className }) {
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="start">
-					<DropdownMenuItem onClick={() => column.toggleSorting(false)}>
+					<DropdownMenuItem
+						onClick={() => column.toggleSorting(false)}
+					>
 						<ArrowUpIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
 						Asc
 					</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => column.toggleSorting(true)}>
+					<DropdownMenuItem
+						onClick={() => column.toggleSorting(true)}
+					>
 						<ArrowDownIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
 						Desc
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
+					<DropdownMenuItem
+						onClick={() => column.toggleVisibility(false)}
+					>
 						<EyeNoneIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
 						Hide
 					</DropdownMenuItem>

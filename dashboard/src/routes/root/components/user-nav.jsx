@@ -16,7 +16,9 @@ export function UserNav() {
 				<Button variant="outline" className="min-w-[200px] gap-x-4">
 					<div className="flex items-center">
 						<Avatar className="mr-2 h-5 w-5">
-							<AvatarImage src={`https://avatar.vercel.sh/member.png`} />
+							<AvatarImage
+								src={`https://avatar.vercel.sh/member.png`}
+							/>
 							<AvatarFallback>CS</AvatarFallback>
 						</Avatar>
 						John Doe

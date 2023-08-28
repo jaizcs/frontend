@@ -17,7 +17,9 @@ export function DataTableToolbar({ table }) {
 					placeholder="Filter tasks..."
 					value={table.getColumn('title')?.getFilterValue() ?? ''}
 					onChange={(event) =>
-						table.getColumn('title')?.setFilterValue(event.target.value)
+						table
+							.getColumn('title')
+							?.setFilterValue(event.target.value)
 					}
 					className="h-8 w-[150px] lg:w-[250px]"
 				/>

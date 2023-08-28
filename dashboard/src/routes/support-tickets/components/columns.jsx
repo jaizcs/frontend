@@ -11,7 +11,9 @@ export const columns = [
 		header: ({ table }) => (
 			<Checkbox
 				checked={table.getIsAllPageRowsSelected()}
-				onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+				onCheckedChange={(value) =>
+					table.toggleAllPageRowsSelected(!!value)
+				}
 				aria-label="Select all"
 				className="translate-y-[2px]"
 			/>
@@ -42,7 +44,9 @@ export const columns = [
 			<DataTableColumnHeader column={column} title="Description" />
 		),
 		cell: ({ row }) => {
-			const label = labels.find((label) => label.value === row.original.label);
+			const label = labels.find(
+				(label) => label.value === row.original.label,
+			);
 
 			return (
 				<div className="flex space-x-2">
