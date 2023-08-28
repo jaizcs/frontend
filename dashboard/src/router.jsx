@@ -1,7 +1,11 @@
 import { createBrowserRouter, redirect } from 'react-router-dom';
 import RootRoute from './routes/root';
-import SupportTicketsRoute from './routes/support-tickets';
+import SupportTicketsRoute, {
+	loader as supportTicketLoader,
+} from './routes/support-tickets';
 import SignInRoute from './routes/sign-in';
+import { action as signinAction } from './routes/sign-in';
+import { loader as rootLoader } from './routes/root';
 
 export const router = createBrowserRouter([
 	{
@@ -13,12 +17,14 @@ export const router = createBrowserRouter([
 	{
 		element: <SignInRoute />,
 		path: '/sign-in',
+		action: signinAction,
 	},
 	{
 		children: [
 			{
 				element: <SupportTicketsRoute />,
 				path: '/support-tickets',
+				loader: supportTicketLoader,
 			},
 			{
 				path: '/conversations',
@@ -33,5 +39,6 @@ export const router = createBrowserRouter([
 			},
 		],
 		element: <RootRoute />,
+		loader: rootLoader,
 	},
 ]);

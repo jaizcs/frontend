@@ -8,8 +8,21 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useGlobalStore } from '@/store';
+import { useNavigate } from 'react-router-dom';
 
 export function UserNav() {
+	const navigate = useNavigate();
+
+	const user = useGlobalStore((state) => state.user);
+
+	function signOut() {
+		localStorage.removeItem('accessToken');
+		useGlobalStore.setState({
+			user: null,
+		});
+		navigate('/sign-in');
+	}
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -21,7 +34,7 @@ export function UserNav() {
 							/>
 							<AvatarFallback>CS</AvatarFallback>
 						</Avatar>
-						John Doe
+						{user.name}
 					</div>
 					<CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
 				</Button>
@@ -35,7 +48,7 @@ export function UserNav() {
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem
-					onClick={() => console.log('sign out')}
+					onClick={() => signOut()}
 					className="cursor-pointer"
 				>
 					Sign out

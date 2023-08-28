@@ -1,8 +1,28 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, redirect } from 'react-router-dom';
 
 import { MainNav } from './components/main-nav';
 import TeamSwitcher from './components/team-switcher';
 import { UserNav } from './components/user-nav';
+import axios from 'axios';
+import { useGlobalStore } from '@/store';
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+export async function loader() {
+	const token = localStorage.getItem('accessToken');
+	if (!token) {
+		return redirect('/sign-in');
+	}
+	const me = await axios.get(BASE_URL + '/users/me', {
+		headers: {
+			Authorization: token,
+		},
+	});
+	useGlobalStore.setState({
+		user: me.data,
+	});
+	return null;
+}
 
 export default function RootRoute() {
 	return (

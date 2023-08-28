@@ -15,7 +15,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { labels } from '../data/data';
+import { types } from '../data/data';
 import { taskSchema } from '../data/schema';
 
 export function DataTableRowActions({ row }) {
@@ -38,15 +38,15 @@ export function DataTableRowActions({ row }) {
 				<DropdownMenuItem>Favorite</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<DropdownMenuSub>
-					<DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
+					<DropdownMenuSubTrigger>Types</DropdownMenuSubTrigger>
 					<DropdownMenuSubContent>
-						<DropdownMenuRadioGroup value={task.label}>
-							{labels.map((label) => (
+						<DropdownMenuRadioGroup value={task.type}>
+							{types.map((type) => (
 								<DropdownMenuRadioItem
-									key={label.value}
-									value={label.value}
+									key={type.value}
+									value={type.value}
 								>
-									{label.label}
+									{type.label}
 								</DropdownMenuRadioItem>
 							))}
 						</DropdownMenuRadioGroup>
