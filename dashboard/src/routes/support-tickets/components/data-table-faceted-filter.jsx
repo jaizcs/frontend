@@ -19,10 +19,12 @@ import {
 	PopoverTrigger,
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
+import { useSearchParams } from 'react-router-dom';
 
 export function DataTableFacetedFilter({ column, title, options }) {
 	const facets = column?.getFacetedUniqueValues();
 	const selectedValues = new Set(column?.getFilterValue());
+	const [searchParams, setSearchParams] = useSearchParams();
 
 	return (
 		<Popover>
@@ -86,6 +88,10 @@ export function DataTableFacetedFilter({ column, title, options }) {
 											column?.setFilterValue(
 												filterValues.length ? filterValues : undefined,
 											);
+											setSearchParams({
+												...searchParams,
+												status: Array.from(selectedValues).join(','),
+											});
 										}}
 									>
 										<div
