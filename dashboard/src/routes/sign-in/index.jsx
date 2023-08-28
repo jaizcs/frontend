@@ -1,4 +1,26 @@
 import { UserAuthForm } from './components/user-auth-form';
+import { useGlobalStore } from '../../store';
+import { redirect } from 'react-router-dom';
+import axios from 'axios';
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+export async function action({ request }) {
+	const formData = await request.formData();
+	const body = Object.fromEntries(formData);
+	const response = await axios.post(BASE_URL + '/users/tokens', body);
+	const responseJSON = response.data;
+	localStorage.setItem('accessToken', responseJSON.accessToken);
+	const me = await axios.get(BASE_URL + '/users/me', {
+		headers: {
+			Authorization: responseJSON.accessToken,
+		},
+	});
+	useGlobalStore.setState({
+		user: me.data,
+	});
+	return redirect('/');
+}
 
 export default function SignInRoute() {
 	return (

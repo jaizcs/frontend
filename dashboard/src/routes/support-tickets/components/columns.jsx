@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 
-import { labels, priorities, statuses } from '../data/data';
+import { types, priorities, statuses } from '../data/data';
 import { DataTableColumnHeader } from './data-table-column-header';
 import { DataTableRowActions } from './data-table-row-actions';
 
@@ -37,18 +37,18 @@ export const columns = [
 		enableHiding: false,
 	},
 	{
-		accessorKey: 'title',
+		accessorKey: 'description',
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Description" />
 		),
 		cell: ({ row }) => {
-			const label = labels.find((label) => label.value === row.original.label);
+			const type = types.find((type) => type.value === row.original.type);
 
 			return (
 				<div className="flex space-x-2">
-					{label && <Badge variant="outline">{label.label}</Badge>}
+					{type && <Badge variant="outline">{type.label}</Badge>}
 					<span className="max-w-[500px] truncate font-medium">
-						{row.getValue('title')}
+						{row.getValue('description')}
 					</span>
 				</div>
 			);
