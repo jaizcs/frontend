@@ -1,10 +1,17 @@
-import { Link, Outlet, redirect } from 'react-router-dom';
+import { Link, Outlet, redirect, useNavigate, useHref } from 'react-router-dom';
 
 import { MainNav } from './components/main-nav';
 import TeamSwitcher from './components/availability-toggle';
 import { UserNav } from './components/user-nav';
 import axios from 'axios';
 import { useGlobalStore } from '@/store';
+import { createClient } from '@supabase/supabase-js';
+import { useEffect, useState } from 'react';
+
+const supabase = createClient(
+	'http://localhost:54321',
+	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0',
+);
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -18,13 +25,43 @@ export async function loader() {
 			Authorization: token,
 		},
 	});
+
 	useGlobalStore.setState({
 		user: me.data,
+		conversations: (
+			await supabase
+				.from('Tickets')
+				.select('*', { count: 'exact' })
+				.eq('status', 'in progress')
+				.eq('UserId', me.data.id)
+		).count,
 	});
 	return null;
 }
 
 export default function RootRoute() {
+	const user = useGlobalStore((store) => store.user);
+	const navigate = useNavigate();
+	const href = useHref();
+
+	const [channel, setChannel] = useState(() => {
+		supabase
+			.channel('schema-db-changes')
+			.on(
+				'postgres_changes',
+				{
+					event: 'UPDATE',
+					schema: 'public',
+					table: 'Tickets',
+					filter: `UserId=eq.${user.id}`,
+				},
+				() => navigate(href),
+			)
+			.subscribe((status) => {
+				console.log(status, 9999);
+			});
+	});
+
 	return (
 		<div className="hidden flex-col md:flex">
 			<div className="border-b">
