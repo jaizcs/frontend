@@ -9,17 +9,102 @@ import { Button } from '@/components/ui/button';
 import {
 	Card,
 	CardContent,
+	CardDescription,
 	CardFooter,
 	CardHeader,
+	CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import axios from 'axios';
+import { createClient } from '@supabase/supabase-js';
+import { create } from 'zustand';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const YUJIN_WIDGET_KEY = process.env.NEXT_PUBLIC_YUJIN_WIDGET_KEY;
+
+const useChatStore = create((set) => ({
+	messages: [],
+	user: null,
+	isLoading: false,
+	isSubscribed: false,
+	createTicket: async (form) => {
+		// create ticket
+		const {
+			data: { id, accessToken },
+		} = await axios.post(API_URL + '/tickets', form, {
+			headers: {
+				authorization: YUJIN_WIDGET_KEY,
+			},
+		});
+
+		const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+			auth: {
+				autoRefreshToken: false,
+				persistSession: false,
+			},
+			global: {
+				fetch,
+			},
+		});
+
+		// subscribe to supabase database changes
+		supabase
+			.channel(`messages`)
+			.on(
+				'postgres_changes',
+				{
+					event: 'INSERT',
+					schema: 'public',
+					table: 'Messages',
+					filter: `TicketId=eq.${id}`,
+				},
+				(payload) => {
+					const {
+						new: { role, message },
+					} = payload;
+
+					console.log(payload);
+
+					set((store) => ({
+						messages: [...store.messages, { role, message }],
+					}));
+				},
+			)
+			.subscribe(async (status) => {
+				if (status === 'SUBSCRIBED') {
+					set({
+						isSubscribed: true,
+					});
+				}
+
+				// ask ai
+				await axios.get(API_URL + `/tickets/${id}/similarity-search`, {
+					headers: {
+						Authorization: accessToken,
+					},
+				});
+			});
+	},
+}));
 
 export function Chat() {
 	const [isChatBoxOpen, setIsChatBoxOpen] = React.useState(false);
+	const isSubscribed = useChatStore((store) => store.isSubscribed);
 
 	return (
 		<div className="fixed bottom-10 right-10 z-50 flex flex-col items-end gap-y-4">
-			{isChatBoxOpen ? <ChatBox /> : null}
+			{isChatBoxOpen ? isSubscribed ? <ChatBox /> : <IssueForm /> : null}
 			<button
 				onClick={() => setIsChatBoxOpen(!isChatBoxOpen)}
 				className="flex h-16 w-16 items-center justify-center rounded-full bg-foreground text-background"
@@ -40,42 +125,31 @@ export function Chat() {
 }
 
 function ChatBox() {
-	const [messages, setMessages] = React.useState([
-		{
-			role: 'agent',
-			content: 'Hi, how can I help you today?',
-		},
-		{
-			role: 'user',
-			content: "Hey, I'm having trouble with my account.",
-		},
-		{
-			role: 'agent',
-			content: 'What seems to be the problem?',
-		},
-		{
-			role: 'user',
-			content: "I can't log in.",
-		},
-	]);
 	const [input, setInput] = React.useState('');
 	const inputLength = input.trim().length;
 
+	const messages = useChatStore((store) => store.messages);
+	const user = useChatStore((store) => store.user);
+
 	return (
 		<>
-			<Card>
+			<Card className="w-[360px]">
 				<CardHeader className="flex flex-row items-center">
 					<div className="flex items-center space-x-4">
 						<Avatar>
-							<AvatarImage src="/avatars/01.png" alt="Image" />
+							<AvatarImage
+								src="https://avatar.vercel.sh/customer-support.png"
+								alt="Image"
+								className={!user ? 'grayscale' : ''}
+							/>
 							<AvatarFallback>OM</AvatarFallback>
 						</Avatar>
 						<div>
 							<p className="text-sm font-medium leading-none">
-								Sofia Davis
+								{user ? user.name : 'Yujin'}
 							</p>
 							<p className="text-sm text-muted-foreground">
-								m@example.com
+								{user ? 'Customer Support' : 'Assistant'}
 							</p>
 						</div>
 					</div>
@@ -86,13 +160,13 @@ function ChatBox() {
 							<div
 								key={index}
 								className={cn(
-									'flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm',
-									message.role === 'user'
+									'flex w-max max-w-[80%] flex-col gap-2 rounded-lg px-3 py-2 text-sm',
+									message.role === 'customer'
 										? 'ml-auto bg-primary text-primary-foreground'
 										: 'bg-muted',
 								)}
 							>
-								{message.content}
+								{message.message}
 							</div>
 						))}
 					</div>
@@ -102,13 +176,13 @@ function ChatBox() {
 						onSubmit={(event) => {
 							event.preventDefault();
 							if (inputLength === 0) return;
-							setMessages([
-								...messages,
-								{
-									role: 'user',
-									content: input,
-								},
-							]);
+							// setMessages([
+							// 	...messages,
+							// 	{
+							// 		role: 'user',
+							// 		content: input,
+							// 	},
+							// ]);
 							setInput('');
 						}}
 						className="flex w-full items-center space-x-2"
@@ -133,5 +207,83 @@ function ChatBox() {
 				</CardFooter>
 			</Card>
 		</>
+	);
+}
+
+export function IssueForm() {
+	const id = React.useId();
+	const [form, setForm] = React.useState({
+		type: 'billing',
+		description: '',
+	});
+	const [fieldErrors, setFieldErrors] = React.useState({});
+	const createTicket = useChatStore((store) => store.createTicket);
+
+	const handleSubmit = async () => {
+		if (!form.description.trim()) {
+			setFieldErrors({
+				...fieldErrors,
+				description: 'Issue description is required',
+			});
+		} else {
+			await createTicket(form);
+		}
+	};
+
+	return (
+		<Card className="w-[360px]">
+			<CardHeader>
+				<CardTitle>Ask us for help</CardTitle>
+				<CardDescription>
+					What area are you having problems with?
+				</CardDescription>
+			</CardHeader>
+			<CardContent className="grid gap-6">
+				<div className="grid gap-2">
+					<Label htmlFor={`area-${id}`}>About</Label>
+					<Select
+						defaultValue={form.type}
+						onValueChange={(value) =>
+							setForm({ ...form, type: value })
+						}
+					>
+						<SelectTrigger id={`area-${id}`} aria-label="About">
+							<SelectValue placeholder="Select" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="billing">Billing</SelectItem>
+							<SelectItem value="technical issue">
+								Technical Issue
+							</SelectItem>
+						</SelectContent>
+					</Select>
+				</div>
+				<div className="grid gap-2">
+					<Label htmlFor={`description-${id}`}>Description</Label>
+					<Textarea
+						id={`description-${id}`}
+						placeholder="Please include all information relevant to your issue."
+						className="h-48"
+						value={form.description}
+						onChange={(e) => {
+							setForm({ ...form, description: e.target.value });
+							setFieldErrors({
+								...fieldErrors,
+								description: undefined,
+							});
+						}}
+					/>
+					{fieldErrors.description ? (
+						<p className="text-sm text-red-600">
+							{fieldErrors.description}
+						</p>
+					) : null}
+				</div>
+			</CardContent>
+			<CardFooter className="justify-between space-x-2">
+				<Button variant="ghost">Cancel</Button>
+				<Button onClick={handleSubmit}>Submit</Button>
+			</CardFooter>
+		</Card>
 	);
 }
