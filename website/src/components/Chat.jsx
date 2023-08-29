@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Send } from 'lucide-react';
+import { Loader2, Send } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
 	Select,
 	SelectContent,
@@ -39,6 +40,10 @@ const useChatStore = create((set) => ({
 	isLoading: false,
 	isSubscribed: false,
 	createTicket: async (form) => {
+		set({
+			isLoading: true,
+		});
+
 		// create ticket
 		const {
 			data: { id, accessToken },
@@ -74,8 +79,6 @@ const useChatStore = create((set) => ({
 						new: { role, message },
 					} = payload;
 
-					console.log(payload);
-
 					set((store) => ({
 						messages: [...store.messages, { role, message }],
 					}));
@@ -94,7 +97,22 @@ const useChatStore = create((set) => ({
 						Authorization: accessToken,
 					},
 				});
+
+				set({
+					isLoading: false,
+				});
 			});
+	},
+	sendMessage: (message) => {
+		set((store) => ({
+			messages: [
+				...store.messages,
+				{
+					role: 'customer',
+					message,
+				},
+			],
+		}));
 	},
 }));
 
@@ -104,7 +122,14 @@ export function Chat() {
 
 	return (
 		<div className="fixed bottom-10 right-10 z-50 flex flex-col items-end gap-y-4">
-			{isChatBoxOpen ? isSubscribed ? <ChatBox /> : <IssueForm /> : null}
+			{isChatBoxOpen ? (
+				isSubscribed ? (
+					<ChatBox />
+				) : (
+					<IssueForm setIsChatBoxOpen={setIsChatBoxOpen} />
+				)
+			) : null}
+
 			<button
 				onClick={() => setIsChatBoxOpen(!isChatBoxOpen)}
 				className="flex h-16 w-16 items-center justify-center rounded-full bg-foreground text-background"
@@ -124,17 +149,30 @@ export function Chat() {
 	);
 }
 
+function LoaderEllipsis() {
+	return (
+		<div className="relative h-5 w-20 flex items-center loader-ellipsis ">
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+		</div>
+	);
+}
+
 function ChatBox() {
 	const [input, setInput] = React.useState('');
 	const inputLength = input.trim().length;
 
 	const messages = useChatStore((store) => store.messages);
 	const user = useChatStore((store) => store.user);
+	const isLoading = useChatStore((store) => store.isLoading);
+	const sendMessage = useChatStore((store) => store.sendMessage);
 
 	return (
 		<>
-			<Card className="w-[360px]">
-				<CardHeader className="flex flex-row items-center">
+			<Card className="relative w-[360px]">
+				<CardHeader className="absolute top-0 inset-x-0 flex flex-row items-center bg-white backdrop-blur-md bg-opacity-90">
 					<div className="flex items-center space-x-4">
 						<Avatar>
 							<AvatarImage
@@ -154,7 +192,7 @@ function ChatBox() {
 						</div>
 					</div>
 				</CardHeader>
-				<CardContent>
+				<CardContent className="px-6 py-24 min-h-[160px] max-h-[640px] overflow-scroll">
 					<div className="space-y-4">
 						{messages.map((message, index) => (
 							<div
@@ -169,20 +207,23 @@ function ChatBox() {
 								{message.message}
 							</div>
 						))}
+						{isLoading ? (
+							<div
+								className={cn(
+									'flex w-max max-w-[80%] flex-col gap-2 rounded-lg px-3 py-2 text-sm bg-muted',
+								)}
+							>
+								<LoaderEllipsis />
+							</div>
+						) : null}
 					</div>
 				</CardContent>
-				<CardFooter>
+				<CardFooter className="absolute bottom-0 inset-x-0 pt-6 bg-white backdrop-blur-md bg-opacity-90">
 					<form
 						onSubmit={(event) => {
 							event.preventDefault();
 							if (inputLength === 0) return;
-							// setMessages([
-							// 	...messages,
-							// 	{
-							// 		role: 'user',
-							// 		content: input,
-							// 	},
-							// ]);
+							sendMessage(input);
 							setInput('');
 						}}
 						className="flex w-full items-center space-x-2"
@@ -210,13 +251,14 @@ function ChatBox() {
 	);
 }
 
-export function IssueForm() {
+export function IssueForm({ setIsChatBoxOpen }) {
 	const id = React.useId();
 	const [form, setForm] = React.useState({
 		type: 'billing',
 		description: '',
 	});
 	const [fieldErrors, setFieldErrors] = React.useState({});
+	const isLoading = useChatStore((store) => store.isLoading);
 	const createTicket = useChatStore((store) => store.createTicket);
 
 	const handleSubmit = async () => {
@@ -281,8 +323,20 @@ export function IssueForm() {
 				</div>
 			</CardContent>
 			<CardFooter className="justify-between space-x-2">
-				<Button variant="ghost">Cancel</Button>
-				<Button onClick={handleSubmit}>Submit</Button>
+				<Button variant="ghost" onClick={() => setIsChatBoxOpen(false)}>
+					Cancel
+				</Button>
+				<Button
+					onClick={handleSubmit}
+					disabled={isLoading}
+					className="w-24"
+				>
+					{isLoading ? (
+						<Loader2 size={16} className="animate-spin" />
+					) : (
+						'Submit'
+					)}
+				</Button>
 			</CardFooter>
 		</Card>
 	);
