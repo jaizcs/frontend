@@ -22,13 +22,11 @@ export async function loader({ request }) {
 		},
 	);
 	const tickets = ticketsData.data;
-	console.log(tickets, '<<');
 	return tickets;
 }
 
 export default function SupportTicketsRoute() {
 	const tickets = useLoaderData();
-
 	return (
 		<div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
 			<DataTable data={tickets.data} columns={columns} />
