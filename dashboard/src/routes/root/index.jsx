@@ -60,7 +60,10 @@ export default function RootRoute() {
 					event: 'UPDATE',
 					schema: 'public',
 					table: 'Tickets',
-					filter: `UserId=eq.${user.id}`,
+					filter:
+						user.role === 'staff'
+							? `UserId=eq.${user.id}`
+							: undefined,
 				},
 				() => navigate(href),
 			)
