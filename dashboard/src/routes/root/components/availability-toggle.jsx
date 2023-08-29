@@ -43,6 +43,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import axios from 'axios';
+import { useGlobalStore } from '@/store';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -68,8 +69,10 @@ async function deleteQue() {
 
 export default function TeamSwitcher({ className }) {
 	const [open, setOpen] = React.useState(false);
-	const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
-	const [selectedTeam, setSelectedTeam] = React.useState('Unavailable');
+	const isAvailable = useGlobalStore((state) => state.isAvailable);
+	const [availability, setAvailability] = React.useState(
+		isAvailable ? 'Available' : 'Unavailable',
+	);
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -83,25 +86,25 @@ export default function TeamSwitcher({ className }) {
 				>
 					<Avatar className="mr-2 h-5 w-5">
 						<AvatarImage
-							src={`https://avatar.vercel.sh/${selectedTeam}.png`}
-							alt={selectedTeam.label}
+							src={`https://avatar.vercel.sh/${availability}.png`}
+							alt={availability.label}
 						/>
 						<AvatarFallback>SC</AvatarFallback>
 					</Avatar>
-					{selectedTeam}
+					{availability}
 					<CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent className="w-[200px] p-0">
 				<Command>
 					<CommandList>
-						{['Available', 'Unavailable'].map((availability) => (
+						{['Available', 'Unavailable'].map((label) => (
 							<CommandItem
-								key={availability}
+								key={label}
 								onSelect={async () => {
-									setSelectedTeam(availability);
+									setAvailability(label);
 									setOpen(false);
-									if (availability === 'Available') {
+									if (label === 'Available') {
 										await postQue();
 									} else {
 										await deleteQue();
@@ -111,15 +114,15 @@ export default function TeamSwitcher({ className }) {
 							>
 								<Avatar className="mr-2 h-5 w-5">
 									<AvatarImage
-										src={`https://avatar.vercel.sh/${availability}.png`}
-										alt={availability}
+										src={`https://avatar.vercel.sh/${label}.png`}
+										alt={label}
 									/>
 								</Avatar>
-								{availability}
+								{label}
 								<CheckIcon
 									className={cn(
 										'ml-auto h-4 w-4',
-										selectedTeam === availability
+										availability === label
 											? 'opacity-100'
 											: 'opacity-0',
 									)}
