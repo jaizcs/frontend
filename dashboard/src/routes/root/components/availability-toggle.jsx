@@ -42,31 +42,29 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
+import axios from 'axios';
 
-const groups = [
-	{
-		label: 'Personal Account',
-		teams: [
-			{
-				label: 'Alicia Koch',
-				value: 'personal',
-			},
-		],
-	},
-	{
-		label: 'Teams',
-		teams: [
-			{
-				label: 'Acme Inc.',
-				value: 'acme-inc',
-			},
-			{
-				label: 'Monsters Inc.',
-				value: 'monsters',
-			},
-		],
-	},
-];
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+async function postQue() {
+	const token = localStorage.getItem('accessToken');
+	await axios.post(BASE_URL + '/user-queue', null, {
+		headers: {
+			Authorization: token,
+		},
+	});
+	return null;
+}
+
+async function deleteQue() {
+	const token = localStorage.getItem('accessToken');
+	await axios.delete(BASE_URL + '/user-queue', {
+		headers: {
+			Authorization: token,
+		},
+	});
+	return null;
+}
 
 export default function TeamSwitcher({ className }) {
 	const [open, setOpen] = React.useState(false);
@@ -100,9 +98,14 @@ export default function TeamSwitcher({ className }) {
 						{['Available', 'Unavailable'].map((availability) => (
 							<CommandItem
 								key={availability}
-								onSelect={() => {
+								onSelect={async () => {
 									setSelectedTeam(availability);
 									setOpen(false);
+									if (availability === 'Available') {
+										await postQue();
+									} else {
+										await deleteQue();
+									}
 								}}
 								className="text-sm"
 							>

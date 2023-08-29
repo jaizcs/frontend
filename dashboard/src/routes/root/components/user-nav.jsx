@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useGlobalStore } from '@/store';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export function UserNav() {
 	const navigate = useNavigate();
@@ -22,6 +23,9 @@ export function UserNav() {
 			user: null,
 		});
 		navigate('/sign-in');
+		toast.success('See you later!', {
+			position: toast.POSITION.BOTTOM_RIGHT,
+		});
 	}
 	return (
 		<DropdownMenu>
@@ -41,7 +45,9 @@ export function UserNav() {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-56" align="end" forceMount>
 				<DropdownMenuItem
-					onClick={() => console.log('settings')}
+					onClick={() => {
+						navigate('/settings');
+					}}
 					className="cursor-pointer"
 				>
 					Settings

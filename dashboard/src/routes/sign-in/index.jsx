@@ -2,27 +2,40 @@ import { UserAuthForm } from './components/user-auth-form';
 import { useGlobalStore } from '../../store';
 import { redirect } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export async function action({ request }) {
-	const formData = await request.formData();
-	const body = Object.fromEntries(formData);
-	const response = await axios.post(BASE_URL + '/users/tokens', body);
-	const responseJSON = response.data;
-	localStorage.setItem('accessToken', responseJSON.accessToken);
-	const me = await axios.get(BASE_URL + '/users/me', {
-		headers: {
-			Authorization: responseJSON.accessToken,
-		},
-	});
-	useGlobalStore.setState({
-		user: me.data,
-	});
-	return redirect('/');
+	try {
+		const formData = await request.formData();
+		const body = Object.fromEntries(formData);
+		const response = await axios.post(BASE_URL + '/users/tokens', body);
+		const responseJSON = response.data;
+		localStorage.setItem('accessToken', responseJSON.accessToken);
+		const me = await axios.get(BASE_URL + '/users/me', {
+			headers: {
+				Authorization: responseJSON.accessToken,
+			},
+		});
+		useGlobalStore.setState({
+			user: me.data,
+		});
+		toast.success(`Welcome, ${me.data.name} !!`, {
+			position: toast.POSITION.BOTTOM_RIGHT,
+		});
+		return redirect('/');
+	} catch (err) {
+		toast.error(`Invalid email or password !!`, {
+			position: toast.POSITION.BOTTOM_RIGHT,
+		});
+		return redirect('/sign-in');
+	}
 }
 
 export default function SignInRoute() {
+	// const { toast } = useToast()
+
 	return (
 		<>
 			<div className="container relative hidden h-full flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">

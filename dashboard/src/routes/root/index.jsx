@@ -1,7 +1,7 @@
 import { Link, Outlet, redirect } from 'react-router-dom';
 
 import { MainNav } from './components/main-nav';
-import TeamSwitcher from './components/team-switcher';
+import TeamSwitcher from './components/availability-toggle';
 import { UserNav } from './components/user-nav';
 import axios from 'axios';
 import { useGlobalStore } from '@/store';
