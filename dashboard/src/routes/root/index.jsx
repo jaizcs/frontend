@@ -25,6 +25,11 @@ export async function loader() {
 			Authorization: token,
 		},
 	});
+	const { data } = await axios.get(BASE_URL + '/user-queue', {
+		headers: {
+			Authorization: token,
+		},
+	});
 
 	useGlobalStore.setState({
 		user: me.data,
@@ -35,7 +40,9 @@ export async function loader() {
 				.eq('status', 'in progress')
 				.eq('UserId', me.data.id)
 		).count,
+		isAvailable: data.isAvailable,
 	});
+
 	return null;
 }
 
@@ -57,9 +64,7 @@ export default function RootRoute() {
 				},
 				() => navigate(href),
 			)
-			.subscribe((status) => {
-				console.log(status, 9999);
-			});
+			.subscribe();
 	});
 
 	return (
