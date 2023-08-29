@@ -116,7 +116,9 @@ export default function TeamSwitcher({ className }) {
 								<CheckIcon
 									className={cn(
 										'ml-auto h-4 w-4',
-										selectedTeam === availability ? 'opacity-100' : 'opacity-0',
+										selectedTeam === availability
+											? 'opacity-100'
+											: 'opacity-0',
 									)}
 								/>
 							</CommandItem>

@@ -42,7 +42,10 @@ export function DataTableRowActions({ row }) {
 					<DropdownMenuSubContent>
 						<DropdownMenuRadioGroup value={task.type}>
 							{types.map((type) => (
-								<DropdownMenuRadioItem key={type.value} value={type.value}>
+								<DropdownMenuRadioItem
+									key={type.value}
+									value={type.value}
+								>
 									{type.label}
 								</DropdownMenuRadioItem>
 							))}

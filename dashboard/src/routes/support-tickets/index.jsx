@@ -12,7 +12,9 @@ export async function loader({ request }) {
 	const ticketsData = await axios.get(
 		BASE_URL +
 			'/tickets' +
-			(url.searchParams.size > 0 ? '?' + url.searchParams.toString() : ''),
+			(url.searchParams.size > 0
+				? '?' + url.searchParams.toString()
+				: ''),
 		{
 			headers: {
 				Authorization: token,

@@ -33,7 +33,9 @@ export function DataTablePagination({ table }) {
 					<Button
 						variant="outline"
 						className="hidden h-8 w-8 p-0 lg:flex"
-						onClick={() => setSearchParams({ ...searchParams, page: 1 })}
+						onClick={() =>
+							setSearchParams({ ...searchParams, page: 1 })
+						}
 						disabled={tickets.page == 1}
 					>
 						<span className="sr-only">Go to first page</span>
@@ -43,7 +45,10 @@ export function DataTablePagination({ table }) {
 						variant="outline"
 						className="h-8 w-8 p-0"
 						onClick={() =>
-							setSearchParams({ ...searchParams, page: +tickets.page - 1 })
+							setSearchParams({
+								...searchParams,
+								page: +tickets.page - 1,
+							})
 						}
 						disabled={tickets.page == 1}
 					>
@@ -54,7 +59,10 @@ export function DataTablePagination({ table }) {
 						variant="outline"
 						className="h-8 w-8 p-0"
 						onClick={() =>
-							setSearchParams({ ...searchParams, page: +tickets.page + 1 })
+							setSearchParams({
+								...searchParams,
+								page: +tickets.page + 1,
+							})
 						}
 						disabled={tickets.page == tickets.pageCount}
 					>
@@ -65,7 +73,10 @@ export function DataTablePagination({ table }) {
 						variant="outline"
 						className="hidden h-8 w-8 p-0 lg:flex"
 						onClick={() =>
-							setSearchParams({ ...searchParams, page: +tickets.pageCount })
+							setSearchParams({
+								...searchParams,
+								page: +tickets.pageCount,
+							})
 						}
 						disabled={tickets.page == tickets.pageCount}
 					>
