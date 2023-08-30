@@ -84,6 +84,22 @@ export const columns = [
 		},
 	},
 	{
+		accessorKey: 'UserId',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Assigned To" />
+		),
+		cell: ({ row }) => {
+			return (
+				<div className="flex w-[100px] items-center">
+					<span>{row.getValue('UserId')}</span>
+				</div>
+			);
+		},
+		filterFn: (row, id, value) => {
+			return value.includes(row.getValue(id));
+		},
+	},
+	{
 		id: 'actions',
 		cell: ({ row }) => <DataTableRowActions row={row} />,
 	},
