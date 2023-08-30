@@ -5,9 +5,17 @@ import { useRef } from 'react';
 
 let supabase;
 
-export const getSupabase = (token) => {
-	if (!supabase && token) {
-		supabase = createClient(SUPABASE_URL, token, {
+export const getSupabase = () => {
+	let ticket;
+
+	try {
+		ticket = JSON.parse(localStorage.getItem('yujin:ticket'));
+	} catch {
+		ticket = {};
+	}
+
+	if (ticket && ticket.accessToken) {
+		supabase = createClient(SUPABASE_URL, ticket.accessToken, {
 			auth: {
 				autoRefreshToken: false,
 				persistSession: false,
@@ -22,8 +30,7 @@ export const getSupabase = (token) => {
 };
 
 export const useSupabase = () => {
-	const accessToken = localStorage.getItem('accessToken');
-	const supabase = useRef(getSupabase(accessToken));
+	const supabase = useRef(getSupabase());
 
 	return supabase.current;
 };

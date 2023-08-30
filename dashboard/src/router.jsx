@@ -6,6 +6,10 @@ import SupportTicketsRoute, {
 import SignInRoute from './routes/sign-in';
 import { action as signinAction } from './routes/sign-in';
 import { loader as rootLoader } from './routes/root';
+import {
+	ConversationsRoute,
+	loader as conversationsLoader,
+} from './routes/conversations';
 
 export const router = createBrowserRouter([
 	{
@@ -31,6 +35,8 @@ export const router = createBrowserRouter([
 				loader: supportTicketLoader,
 			},
 			{
+				element: <ConversationsRoute />,
+				loader: conversationsLoader,
 				path: '/conversations',
 			},
 			{
