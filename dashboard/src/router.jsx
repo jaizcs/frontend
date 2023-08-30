@@ -10,6 +10,10 @@ import { loader as rootLoader } from './routes/root';
 export const router = createBrowserRouter([
 	{
 		loader: () => {
+			const token = localStorage.getItem('accessToken');
+			if (!token) {
+				return redirect('/sign-in');
+			}
 			return redirect('/support-tickets');
 		},
 		path: '/',

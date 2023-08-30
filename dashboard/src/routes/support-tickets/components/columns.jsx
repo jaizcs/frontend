@@ -34,7 +34,9 @@ export const columns = [
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Ticket" />
 		),
-		cell: ({ row }) => <div className="w-[80px]">{row.getValue('id')}</div>,
+		cell: ({ row }) => (
+			<div className="w-[80px]">TICKET-{row.getValue('id')}</div>
+		),
 		enableSorting: false,
 		enableHiding: false,
 	},
@@ -48,8 +50,10 @@ export const columns = [
 
 			return (
 				<div className="flex space-x-2">
-					{type && <Badge variant="outline">{type.label}</Badge>}
-					<span className="max-w-[500px] truncate font-medium">
+					<Badge variant="outline" className="capitalize truncate">
+						{row.original.type}
+					</Badge>
+					<span className="max-w-[640px] truncate font-medium">
 						{row.getValue('description')}
 					</span>
 				</div>
@@ -84,14 +88,16 @@ export const columns = [
 		},
 	},
 	{
-		accessorKey: 'UserId',
+		id: 'assignee',
+		accessorFn: (row) => row.user,
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Assigned To" />
 		),
 		cell: ({ row }) => {
+			console.log(row.getValue('assignee')?.name);
 			return (
 				<div className="flex w-[100px] items-center">
-					<span>{row.getValue('UserId')}</span>
+					<span>{row.getValue('assignee')?.name}</span>
 				</div>
 			);
 		},

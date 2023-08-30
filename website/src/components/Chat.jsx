@@ -35,7 +35,12 @@ const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const YUJIN_WIDGET_KEY = process.env.NEXT_PUBLIC_YUJIN_WIDGET_KEY;
 
 const useChatStore = create((set) => ({
-	messages: [],
+	messages: [
+		{
+			role: 'system',
+			message: 'CONFIRMATION',
+		},
+	],
 	user: null,
 	isLoading: false,
 	isSubscribed: false,
@@ -122,13 +127,14 @@ export function Chat() {
 
 	return (
 		<div className="fixed bottom-10 right-10 z-50 flex flex-col items-end gap-y-4">
-			{isChatBoxOpen ? (
+			<ChatBox />
+			{/* {isChatBoxOpen ? (
 				isSubscribed ? (
 					<ChatBox />
 				) : (
 					<IssueForm setIsChatBoxOpen={setIsChatBoxOpen} />
 				)
-			) : null}
+			) : null} */}
 
 			<button
 				onClick={() => setIsChatBoxOpen(!isChatBoxOpen)}
@@ -194,19 +200,50 @@ function ChatBox() {
 				</CardHeader>
 				<CardContent className="px-6 py-24 min-h-[160px] max-h-[640px] overflow-scroll">
 					<div className="space-y-4">
-						{messages.map((message, index) => (
-							<div
-								key={index}
-								className={cn(
-									'flex w-max max-w-[80%] flex-col gap-2 rounded-lg px-3 py-2 text-sm',
-									message.role === 'customer'
-										? 'ml-auto bg-primary text-primary-foreground'
-										: 'bg-muted',
-								)}
-							>
-								{message.message}
-							</div>
-						))}
+						{messages.map((message, index, arr) =>
+							message.role === 'system' &&
+							message.message === 'CONFIRMATION' ? (
+								index === arr.length - 1 ? (
+									<div
+										key={index}
+										className={cn(
+											'flex w-max max-w-[80%] flex-col gap-2 rounded-lg px-3 py-2 text-sm bg-muted',
+										)}
+									>
+										<p>
+											Are you satisfied with the solution
+											provided?
+										</p>
+										<div className="flex gap-x-2">
+											<Button
+												variant="outline"
+												className="flex-1"
+											>
+												Yes
+											</Button>
+											<Button
+												variant="outline"
+												className="flex-1"
+											>
+												No
+											</Button>
+										</div>
+									</div>
+								) : null
+							) : (
+								<div
+									key={index}
+									className={cn(
+										'flex w-max max-w-[80%] flex-col gap-2 rounded-lg px-3 py-2 text-sm',
+										message.role === 'customer'
+											? 'ml-auto bg-primary text-primary-foreground'
+											: 'bg-muted',
+									)}
+								>
+									{message.message}
+								</div>
+							),
+						)}
 						{isLoading ? (
 							<div
 								className={cn(
