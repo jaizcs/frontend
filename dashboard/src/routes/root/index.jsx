@@ -1,17 +1,12 @@
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { Link, Outlet, redirect, useNavigate, useHref } from 'react-router-dom';
 
+import { useGlobalStore } from '@/store';
+import { useSupabase } from '@/lib/supabase';
 import { MainNav } from './components/main-nav';
 import TeamSwitcher from './components/availability-toggle';
 import { UserNav } from './components/user-nav';
-import axios from 'axios';
-import { useGlobalStore } from '@/store';
-import { createClient } from '@supabase/supabase-js';
-import { useEffect, useState } from 'react';
-
-const supabase = createClient(
-	'http://localhost:54321',
-	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0',
-);
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -50,24 +45,27 @@ export default function RootRoute() {
 	const user = useGlobalStore((store) => store.user);
 	const navigate = useNavigate();
 	const href = useHref();
+	const supabase = useSupabase();
 
-	const [channel, setChannel] = useState(() => {
-		supabase
-			.channel('schema-db-changes')
-			.on(
-				'postgres_changes',
-				{
-					event: 'UPDATE',
-					schema: 'public',
-					table: 'Tickets',
-					filter:
-						user.role === 'staff'
-							? `UserId=eq.${user.id}`
-							: undefined,
-				},
-				() => navigate(href),
-			)
-			.subscribe();
+	useEffect(() => {
+		if (supabase) {
+			supabase
+				.channel('schema-db-changes')
+				.on(
+					'postgres_changes',
+					{
+						event: 'UPDATE',
+						schema: 'public',
+						table: 'Tickets',
+						filter:
+							user.role === 'staff'
+								? `UserId=eq.${user.id}`
+								: undefined,
+					},
+					() => navigate(href),
+				)
+				.subscribe();
+		}
 	});
 
 	return (
