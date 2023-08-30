@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, Outlet, redirect, useNavigate, useHref } from 'react-router-dom';
 
 import { useGlobalStore } from '@/store';
@@ -69,7 +69,7 @@ export default function RootRoute() {
 	}, []);
 
 	return (
-		<div className="hidden flex-col md:flex">
+		<div className="hidden flex-col h-full md:flex overflow-hidden">
 			<div className="border-b">
 				<div className="flex h-16 items-center px-4">
 					<Link to="/" className="font-bungee text-2xl">
@@ -83,7 +83,7 @@ export default function RootRoute() {
 					</div>
 				</div>
 			</div>
-			<main>
+			<main className="h-full overflow-hidden">
 				<Outlet />
 			</main>
 		</div>

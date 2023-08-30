@@ -1,8 +1,12 @@
 'use client';
 
-import * as React from 'react';
+import axios from 'axios';
 import { Loader2, Send } from 'lucide-react';
+import * as React from 'react';
+import { create } from 'zustand';
 
+import { API_URL, YUJIN_WIDGET_KEY } from '@/lib/config';
+import { getSupabase, useSupabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -16,7 +20,6 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import {
 	Select,
 	SelectContent,
@@ -25,118 +28,150 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import axios from 'axios';
-import { createClient } from '@supabase/supabase-js';
-import { create } from 'zustand';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const YUJIN_WIDGET_KEY = process.env.NEXT_PUBLIC_YUJIN_WIDGET_KEY;
+let ticket;
+
+try {
+	ticket = JSON.parse(localStorage.getItem('yujin:ticket'));
+} catch {
+	ticket = null;
+}
+
+let user;
+
+try {
+	user = JSON.parse(localStorage.getItem('yujin:user'));
+} catch {
+	user = null;
+}
 
 const useChatStore = create((set) => ({
-	messages: [
-		{
-			role: 'system',
-			message: 'CONFIRMATION',
-		},
-	],
-	user: null,
+	messages: [],
+	ticket: ticket,
+	user: user,
+	isOpen: false,
 	isLoading: false,
 	isSubscribed: false,
+	open: () => {
+		set({
+			isOpen: true,
+		});
+	},
+	close: () => {
+		set({
+			isOpen: false,
+		});
+	},
 	createTicket: async (form) => {
 		set({
 			isLoading: true,
 		});
 
 		// create ticket
-		const {
-			data: { id, accessToken },
-		} = await axios.post(API_URL + '/tickets', form, {
+		const { data: ticket } = await axios.post(API_URL + '/tickets', form, {
 			headers: {
 				authorization: YUJIN_WIDGET_KEY,
 			},
 		});
 
-		const supabase = createClient(SUPABASE_URL, accessToken, {
-			auth: {
-				autoRefreshToken: false,
-				persistSession: false,
+		localStorage.setItem('yujin:ticket', JSON.stringify(ticket));
+
+		set({
+			ticket,
+		});
+
+		const { data } = await axios.get(
+			API_URL + `/tickets/${ticket.id}/similarity-search`,
+			{
+				headers: {
+					Authorization: ticket.accessToken,
+				},
 			},
-			global: {
-				fetch,
+		);
+
+		if (typeof data === 'object' && data.user) {
+			set({
+				user: data.user,
+			});
+			localStorage.setItem('yujin:user', JSON.stringify(data.user));
+		}
+
+		set({
+			ticket,
+		});
+	},
+	setIsLoading: (isLoading) => {
+		set({
+			isLoading,
+		});
+	},
+	initMessages: async (ticketId) => {
+		const { data: messages } = await getSupabase()
+			.from('Messages')
+			.select()
+			.eq('TicketId', ticketId)
+			.order('id', { ascending: true });
+
+		console.log(messages);
+
+		set({
+			messages,
+		});
+	},
+	addMessage: (message) => {
+		set((store) => ({
+			messages: [...store.messages, message],
+		}));
+	},
+	sendMessage: async (message) => {
+		await getSupabase().from('Messages').insert({
+			role: 'customer',
+			message,
+			TicketId: useChatStore.getState().ticket.id,
+		});
+	},
+	resolveTicket: async (isSatisfactory, resolution) => {
+		const data = { isSatisfactory };
+		if (resolution) data.resolution = resolution;
+
+		set({
+			isLoading: true,
+		});
+
+		const ticket = useChatStore.getState().ticket;
+
+		await axios.patch(API_URL + `/tickets/${ticket.id}`, data, {
+			headers: {
+				authorization: useChatStore.getState().ticket.accessToken,
 			},
 		});
 
-		// subscribe to supabase database changes
-		supabase
-			.channel(`messages`)
-			.on(
-				'postgres_changes',
-				{
-					event: 'INSERT',
-					schema: 'public',
-					table: 'Messages',
-					filter: `TicketId=eq.${id}`,
-				},
-				(payload) => {
-					const {
-						new: { role, message },
-					} = payload;
+		localStorage.removeItem('yujin:ticket');
+		localStorage.removeItem('yujin:user');
 
-					set((store) => ({
-						messages: [...store.messages, { role, message }],
-					}));
-				},
-			)
-			.subscribe(async (status) => {
-				if (status === 'SUBSCRIBED') {
-					set({
-						isSubscribed: true,
-					});
-				}
-
-				// ask ai
-				await axios.get(API_URL + `/tickets/${id}/similarity-search`, {
-					headers: {
-						Authorization: accessToken,
-					},
-				});
-
-				set({
-					isLoading: false,
-				});
+		setTimeout(() => {
+			set({
+				messages: [],
+				ticket: null,
+				isOpen: false,
+				isLoading: false,
 			});
-	},
-	sendMessage: (message) => {
-		set((store) => ({
-			messages: [
-				...store.messages,
-				{
-					role: 'customer',
-					message,
-				},
-			],
-		}));
+		}, 1000);
 	},
 }));
 
 export function Chat() {
-	const [isChatBoxOpen, setIsChatBoxOpen] = React.useState(false);
-	const isSubscribed = useChatStore((store) => store.isSubscribed);
+	const ticket = useChatStore((store) => store.ticket);
+	const isOpen = useChatStore((store) => store.isOpen);
+	const open = useChatStore((store) => store.open);
+	const close = useChatStore((store) => store.close);
 
 	return (
 		<div className="fixed bottom-10 right-10 z-50 flex flex-col items-end gap-y-4">
-			<ChatBox />
-			{/* {isChatBoxOpen ? (
-				isSubscribed ? (
-					<ChatBox />
-				) : (
-					<IssueForm setIsChatBoxOpen={setIsChatBoxOpen} />
-				)
-			) : null} */}
+			{isOpen ? ticket ? <ChatBox /> : <IssueForm /> : null}
 
 			<button
-				onClick={() => setIsChatBoxOpen(!isChatBoxOpen)}
+				onClick={() => (isOpen ? close() : open())}
 				className="flex h-16 w-16 items-center justify-center rounded-full bg-foreground text-background"
 			>
 				<svg className="h-10 w-10" viewBox="0 0 40 40" fill="none">
@@ -166,13 +201,55 @@ function LoaderEllipsis() {
 }
 
 function ChatBox() {
+	const supabase = useSupabase();
+
 	const [input, setInput] = React.useState('');
 	const inputLength = input.trim().length;
 
 	const messages = useChatStore((store) => store.messages);
+	const ticket = useChatStore((store) => store.ticket);
 	const user = useChatStore((store) => store.user);
 	const isLoading = useChatStore((store) => store.isLoading);
+	const setIsLoading = useChatStore((store) => store.setIsLoading);
+	const initMessages = useChatStore((store) => store.initMessages);
+	const addMessage = useChatStore((store) => store.addMessage);
 	const sendMessage = useChatStore((store) => store.sendMessage);
+
+	const scrollAreaRef = React.useRef();
+
+	React.useEffect(() => {
+		(async () => {
+			console.log(ticket.id);
+			await initMessages(ticket.id);
+
+			if (supabase) {
+				supabase
+					.channel(`messages`)
+					.on(
+						'postgres_changes',
+						{
+							event: 'INSERT',
+							schema: 'public',
+							table: 'Messages',
+							filter: `TicketId=eq.${ticket.id}`,
+						},
+						async () => {
+							await initMessages(ticket.id);
+						},
+					)
+					.subscribe((status) => {
+						setIsLoading(false);
+					});
+			}
+		})();
+	}, [supabase, ticket, setIsLoading, initMessages, addMessage]);
+
+	React.useEffect(() => {
+		if (scrollAreaRef.current) {
+			scrollAreaRef.current.scrollTop =
+				scrollAreaRef.current.scrollHeight;
+		}
+	}, [messages]);
 
 	return (
 		<>
@@ -197,37 +274,16 @@ function ChatBox() {
 						</div>
 					</div>
 				</CardHeader>
-				<CardContent className="px-6 py-24 min-h-[160px] max-h-[640px] overflow-scroll">
+				<CardContent
+					ref={scrollAreaRef}
+					className="px-6 py-24 min-h-[160px] max-h-[640px] overflow-scroll"
+				>
 					<div className="space-y-4">
 						{messages.map((message, index, arr) =>
 							message.role === 'system' &&
 							message.message === 'CONFIRMATION' ? (
 								index === arr.length - 1 ? (
-									<div
-										key={index}
-										className={cn(
-											'flex w-max max-w-[80%] flex-col gap-2 rounded-lg px-3 py-2 text-sm bg-muted',
-										)}
-									>
-										<p>
-											Are you satisfied with the solution
-											provided?
-										</p>
-										<div className="flex gap-x-2">
-											<Button
-												variant="outline"
-												className="flex-1"
-											>
-												Yes
-											</Button>
-											<Button
-												variant="outline"
-												className="flex-1"
-											>
-												No
-											</Button>
-										</div>
-									</div>
+									<Feedback key={index} />
 								) : null
 							) : (
 								<div
@@ -287,7 +343,36 @@ function ChatBox() {
 	);
 }
 
-export function IssueForm({ setIsChatBoxOpen }) {
+export function Feedback() {
+	const resolveTicket = useChatStore((store) => store.resolveTicket);
+	const messages = useChatStore((store) => store.messages);
+
+	const resolution = messages.length === 3 ? messages[1].message : undefined;
+
+	return (
+		<div
+			className={cn(
+				'flex w-max max-w-[80%] flex-col gap-2 rounded-lg px-3 py-2 text-sm bg-muted',
+			)}
+		>
+			<p>Are you satisfied with the solution provided?</p>
+			<div className="flex gap-x-2">
+				<Button
+					variant="outline"
+					className="flex-1"
+					onClick={() => resolveTicket(true, resolution)}
+				>
+					Yes
+				</Button>
+				<Button variant="outline" className="flex-1">
+					No
+				</Button>
+			</div>
+		</div>
+	);
+}
+
+export function IssueForm() {
 	const id = React.useId();
 	const [form, setForm] = React.useState({
 		type: 'billing',
@@ -295,6 +380,7 @@ export function IssueForm({ setIsChatBoxOpen }) {
 	});
 	const [fieldErrors, setFieldErrors] = React.useState({});
 	const isLoading = useChatStore((store) => store.isLoading);
+	const close = useChatStore((store) => store.close);
 	const createTicket = useChatStore((store) => store.createTicket);
 
 	const handleSubmit = async () => {
@@ -359,7 +445,7 @@ export function IssueForm({ setIsChatBoxOpen }) {
 				</div>
 			</CardContent>
 			<CardFooter className="justify-between space-x-2">
-				<Button variant="ghost" onClick={() => setIsChatBoxOpen(false)}>
+				<Button variant="ghost" onClick={() => close()}>
 					Cancel
 				</Button>
 				<Button
