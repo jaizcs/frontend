@@ -12,6 +12,7 @@ export async function action({ request }) {
 		const body = Object.fromEntries(formData);
 		const response = await axios.post(BASE_URL + '/users/tokens', body);
 		const responseJSON = response.data;
+
 		localStorage.setItem('accessToken', responseJSON.accessToken);
 		const me = await axios.get(BASE_URL + '/users/me', {
 			headers: {
@@ -21,6 +22,7 @@ export async function action({ request }) {
 		useGlobalStore.setState({
 			user: me.data,
 		});
+
 		toast.success(`Welcome, ${me.data.name} !!`, {
 			position: toast.POSITION.BOTTOM_RIGHT,
 		});

@@ -15,30 +15,36 @@ export async function loader() {
 	if (!token) {
 		return redirect('/sign-in');
 	}
-	const me = await axios.get(BASE_URL + '/users/me', {
-		headers: {
-			Authorization: token,
-		},
-	});
-	const { data } = await axios.get(BASE_URL + '/user-queue', {
-		headers: {
-			Authorization: token,
-		},
-	});
 
-	useGlobalStore.setState({
-		user: me.data,
-		conversations: (
-			await getSupabase(token)
-				.from('Tickets')
-				.select('*', { count: 'exact' })
-				.eq('status', 'in progress')
-				.eq('UserId', me.data.id)
-		).count,
-		isAvailable: data.isAvailable,
-	});
+	try {
+		const me = await axios.get(BASE_URL + '/users/me', {
+			headers: {
+				Authorization: token,
+			},
+		});
+		const { data } = await axios.get(BASE_URL + '/user-queue', {
+			headers: {
+				Authorization: token,
+			},
+		});
 
-	return null;
+		useGlobalStore.setState({
+			user: me.data,
+			conversations: (
+				await getSupabase(token)
+					.from('Tickets')
+					.select('*', { count: 'exact' })
+					.eq('status', 'in progress')
+					.eq('UserId', me.data.id)
+			).count,
+			isAvailable: data.isAvailable,
+		});
+
+		return null;
+	} catch (err) {
+		localStorage.removeItem('accessToken');
+		return redirect('/sign-in');
+	}
 }
 
 export default function RootRoute() {

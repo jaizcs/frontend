@@ -228,7 +228,7 @@ function ResolveForm({
 			</CardContent>
 			<CardFooter className="justify-between space-x-2">
 				<Button variant="ghost" onClick={() => setMode('CHAT')}>
-					Cancel
+					Back to chat
 				</Button>
 				<Button onClick={resolveTicket} className="w-24">
 					Submit
