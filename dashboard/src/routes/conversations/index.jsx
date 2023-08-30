@@ -41,17 +41,19 @@ export function ConversationsRoute() {
 	const conversations = useLoaderData();
 
 	return (
-		<div className="h-full px-6 py-12 grid grid-cols-4 gap-x-4">
-			{conversations.map((conversation) => (
-				<ChatBox
-					key={conversation.id}
-					ticketId={conversation.id}
-					userId={conversation.UserId}
-					initialMessages={conversation.Messages.sort(
-						(a, b) => a.id - b.id,
-					)}
-				/>
-			))}
-		</div>
+		<main className="h-full overflow-hidden">
+			<div className="h-full px-6 py-12 grid grid-cols-4 gap-x-4">
+				{conversations.map((conversation) => (
+					<ChatBox
+						key={conversation.id}
+						ticketId={conversation.id}
+						userId={conversation.UserId}
+						initialMessages={conversation.Messages.sort(
+							(a, b) => a.id - b.id,
+						)}
+					/>
+				))}
+			</div>
+		</main>
 	);
 }

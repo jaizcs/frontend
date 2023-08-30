@@ -1,36 +1,36 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-import { SUPABASE_URL } from './config'
-import { useRef } from 'react'
+import { SUPABASE_URL } from './config';
+import { useRef } from 'react';
 
-let supabase
+let supabase;
 
 export const getSupabase = () => {
-  let ticket
+	let ticket;
 
-  try {
-    ticket = JSON.parse(localStorage.getItem('yujin:ticket'))
-  } catch {
-    ticket = {}
-  }
+	try {
+		ticket = JSON.parse(localStorage.getItem('yujin:ticket'));
+	} catch {
+		ticket = {};
+	}
 
-  if (ticket && ticket.accessToken) {
-    supabase = createClient(SUPABASE_URL, ticket.accessToken, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      },
-      global: {
-        fetch,
-      },
-    })
-  }
+	if (ticket && ticket.accessToken) {
+		supabase = createClient(SUPABASE_URL, ticket.accessToken, {
+			auth: {
+				autoRefreshToken: false,
+				persistSession: false,
+			},
+			global: {
+				fetch,
+			},
+		});
+	}
 
-  return supabase
-}
+	return supabase;
+};
 
 export const useSupabase = () => {
-  const supabase = useRef(getSupabase())
+	const supabase = useRef(getSupabase());
 
-  return supabase.current
-}
+	return supabase.current;
+};

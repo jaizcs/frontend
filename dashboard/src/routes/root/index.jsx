@@ -83,9 +83,7 @@ export default function RootRoute() {
 					</div>
 				</div>
 			</div>
-			<main className="h-full overflow-hidden">
-				<Outlet />
-			</main>
+			<Outlet />
 		</div>
 	);
 }

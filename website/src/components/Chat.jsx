@@ -219,7 +219,6 @@ function ChatBox() {
 
 	React.useEffect(() => {
 		(async () => {
-			console.log(ticket.id);
 			await initMessages(ticket.id);
 
 			if (supabase) {
@@ -238,7 +237,11 @@ function ChatBox() {
 						},
 					)
 					.subscribe((status) => {
-						setIsLoading(false);
+						if (status === 'SUBSCRIBED') {
+							setTimeout(() => {
+								setIsLoading(false);
+							}, 500);
+						}
 					});
 			}
 		})();
@@ -364,7 +367,11 @@ export function Feedback() {
 				>
 					Yes
 				</Button>
-				<Button variant="outline" className="flex-1">
+				<Button
+					variant="outline"
+					className="flex-1"
+					onClick={() => resolveTicket(false, resolution)}
+				>
 					No
 				</Button>
 			</div>

@@ -8,37 +8,37 @@ The license grants permission to **one individual** (the Licensee) to access and
 
 You **can**:
 
-- Use the Components and Templates to create unlimited End Products.
-- Modify the Components and Templates to create derivative components and templates. Those components and templates are subject to this license.
-- Use the Components and Templates to create unlimited End Products for unlimited Clients.
-- Use the Components and Templates to create End Products where the End Product is sold to End Users.
-- Use the Components and Templates to create End Products that are open source and freely available to End Users.
+-   Use the Components and Templates to create unlimited End Products.
+-   Modify the Components and Templates to create derivative components and templates. Those components and templates are subject to this license.
+-   Use the Components and Templates to create unlimited End Products for unlimited Clients.
+-   Use the Components and Templates to create End Products where the End Product is sold to End Users.
+-   Use the Components and Templates to create End Products that are open source and freely available to End Users.
 
 You **cannot**:
 
-- Use the Components and Templates to create End Products that are designed to allow an End User to build their own End Products using the Components and Templates or derivatives of the Components and Templates.
-- Re-distribute the Components and Templates or derivatives of the Components and Templates separately from an End Product, neither in code or as design assets.
-- Share your access to the Components and Templates with any other individuals.
-- Use the Components and Templates to produce anything that may be deemed by Tailwind Labs Inc, in their sole and absolute discretion, to be competitive or in conflict with the business of Tailwind Labs Inc.
+-   Use the Components and Templates to create End Products that are designed to allow an End User to build their own End Products using the Components and Templates or derivatives of the Components and Templates.
+-   Re-distribute the Components and Templates or derivatives of the Components and Templates separately from an End Product, neither in code or as design assets.
+-   Share your access to the Components and Templates with any other individuals.
+-   Use the Components and Templates to produce anything that may be deemed by Tailwind Labs Inc, in their sole and absolute discretion, to be competitive or in conflict with the business of Tailwind Labs Inc.
 
 ### Example usage
 
 Examples of usage **allowed** by the license:
 
-- Creating a personal website by yourself.
-- Creating a website or web application for a client that will be owned by that client.
-- Creating a commercial SaaS application (like an invoicing app for example) where end users have to pay a fee to use the application.
-- Creating a commercial self-hosted web application that is sold to end users for a one-time fee.
-- Creating a web application where the primary purpose is clearly not to simply re-distribute the components (like a conference organization app that uses the components for its UI for example) that is free and open source, where the source code is publicly available.
+-   Creating a personal website by yourself.
+-   Creating a website or web application for a client that will be owned by that client.
+-   Creating a commercial SaaS application (like an invoicing app for example) where end users have to pay a fee to use the application.
+-   Creating a commercial self-hosted web application that is sold to end users for a one-time fee.
+-   Creating a web application where the primary purpose is clearly not to simply re-distribute the components (like a conference organization app that uses the components for its UI for example) that is free and open source, where the source code is publicly available.
 
 Examples of usage **not allowed** by the license:
 
-- Creating a repository of your favorite Tailwind UI components or templates (or derivatives based on Tailwind UI components or templates) and publishing it publicly.
-- Creating a React or Vue version of Tailwind UI and making it available either for sale or for free.
-- Create a Figma or Sketch UI kit based on the Tailwind UI component designs.
-- Creating a "website builder" project where end users can build their own websites using components or templates included with or derived from Tailwind UI.
-- Creating a theme, template, or project starter kit using the components or templates and making it available either for sale or for free.
-- Creating an admin panel tool (like [Laravel Nova](https://nova.laravel.com/) or [ActiveAdmin](https://activeadmin.info/)) that is made available either for sale or for free.
+-   Creating a repository of your favorite Tailwind UI components or templates (or derivatives based on Tailwind UI components or templates) and publishing it publicly.
+-   Creating a React or Vue version of Tailwind UI and making it available either for sale or for free.
+-   Create a Figma or Sketch UI kit based on the Tailwind UI component designs.
+-   Creating a "website builder" project where end users can build their own websites using components or templates included with or derived from Tailwind UI.
+-   Creating a theme, template, or project starter kit using the components or templates and making it available either for sale or for free.
+-   Creating an admin panel tool (like [Laravel Nova](https://nova.laravel.com/) or [ActiveAdmin](https://activeadmin.info/)) that is made available either for sale or for free.
 
 In simple terms, use Tailwind UI for anything you like as long as it doesn't compete with Tailwind UI.
 
@@ -62,37 +62,37 @@ The license grants permission for **up to 25 Employees and Contractors of the Li
 
 You **can**:
 
-- Use the Components and Templates to create unlimited End Products.
-- Modify the Components and Templates to create derivative components and templates. Those components and templates are subject to this license.
-- Use the Components and Templates to create unlimited End Products for unlimited Clients.
-- Use the Components and Templates to create End Products where the End Product is sold to End Users.
-- Use the Components and Templates to create End Products that are open source and freely available to End Users.
+-   Use the Components and Templates to create unlimited End Products.
+-   Modify the Components and Templates to create derivative components and templates. Those components and templates are subject to this license.
+-   Use the Components and Templates to create unlimited End Products for unlimited Clients.
+-   Use the Components and Templates to create End Products where the End Product is sold to End Users.
+-   Use the Components and Templates to create End Products that are open source and freely available to End Users.
 
 You **cannot**:
 
-- Use the Components or Templates to create End Products that are designed to allow an End User to build their own End Products using the Components or Templates or derivatives of the Components or Templates.
-- Re-distribute the Components or Templates or derivatives of the Components or Templates separately from an End Product.
-- Use the Components or Templates to create End Products that are the property of any individual or entity other than the Licensee or Clients of the Licensee.
-- Use the Components or Templates to produce anything that may be deemed by Tailwind Labs Inc, in their sole and absolute discretion, to be competitive or in conflict with the business of Tailwind Labs Inc.
+-   Use the Components or Templates to create End Products that are designed to allow an End User to build their own End Products using the Components or Templates or derivatives of the Components or Templates.
+-   Re-distribute the Components or Templates or derivatives of the Components or Templates separately from an End Product.
+-   Use the Components or Templates to create End Products that are the property of any individual or entity other than the Licensee or Clients of the Licensee.
+-   Use the Components or Templates to produce anything that may be deemed by Tailwind Labs Inc, in their sole and absolute discretion, to be competitive or in conflict with the business of Tailwind Labs Inc.
 
 ### Example usage
 
 Examples of usage **allowed** by the license:
 
-- Creating a website for your company.
-- Creating a website or web application for a client that will be owned by that client.
-- Creating a commercial SaaS application (like an invoicing app for example) where end users have to pay a fee to use the application.
-- Creating a commercial self-hosted web application that is sold to end users for a one-time fee.
-- Creating a web application where the primary purpose is clearly not to simply re-distribute the components or templates (like a conference organization app that uses the components or a template for its UI for example) that is free and open source, where the source code is publicly available.
+-   Creating a website for your company.
+-   Creating a website or web application for a client that will be owned by that client.
+-   Creating a commercial SaaS application (like an invoicing app for example) where end users have to pay a fee to use the application.
+-   Creating a commercial self-hosted web application that is sold to end users for a one-time fee.
+-   Creating a web application where the primary purpose is clearly not to simply re-distribute the components or templates (like a conference organization app that uses the components or a template for its UI for example) that is free and open source, where the source code is publicly available.
 
 Examples of use **not allowed** by the license:
 
-- Creating a repository of your favorite Tailwind UI components or template (or derivatives based on Tailwind UI components or templates) and publishing it publicly.
-- Creating a React or Vue version of Tailwind UI and making it available either for sale or for free.
-- Creating a "website builder" project where end users can build their own websites using components or templates included with or derived from Tailwind UI.
-- Creating a theme or template using the components or templates and making it available either for sale or for free.
-- Creating an admin panel tool (like [Laravel Nova](https://nova.laravel.com/) or [ActiveAdmin](https://activeadmin.info/)) that is made available either for sale or for free.
-- Creating any End Product that is not the sole property of either your company or a client of your company. For example your employees/contractors can't use your company Tailwind UI license to build their own websites or side projects.
+-   Creating a repository of your favorite Tailwind UI components or template (or derivatives based on Tailwind UI components or templates) and publishing it publicly.
+-   Creating a React or Vue version of Tailwind UI and making it available either for sale or for free.
+-   Creating a "website builder" project where end users can build their own websites using components or templates included with or derived from Tailwind UI.
+-   Creating a theme or template using the components or templates and making it available either for sale or for free.
+-   Creating an admin panel tool (like [Laravel Nova](https://nova.laravel.com/) or [ActiveAdmin](https://activeadmin.info/)) that is made available either for sale or for free.
+-   Creating any End Product that is not the sole property of either your company or a client of your company. For example your employees/contractors can't use your company Tailwind UI license to build their own websites or side projects.
 
 ### Team License Definitions
 

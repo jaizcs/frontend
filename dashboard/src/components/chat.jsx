@@ -6,7 +6,6 @@ import * as React from 'react';
 import { useSupabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import {
 	Card,
 	CardContent,
