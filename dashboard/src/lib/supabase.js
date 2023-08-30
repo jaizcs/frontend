@@ -25,5 +25,5 @@ export const useSupabase = () => {
 	const accessToken = localStorage.getItem('accessToken');
 	const supabase = useRef(getSupabase(accessToken));
 
-	return supabase.value;
+	return supabase.current;
 };

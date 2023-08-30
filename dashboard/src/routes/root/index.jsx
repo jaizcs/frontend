@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link, Outlet, redirect, useNavigate, useHref } from 'react-router-dom';
 
 import { useGlobalStore } from '@/store';
-import { useSupabase } from '@/lib/supabase';
+import { useSupabase, getSupabase } from '@/lib/supabase';
 import { MainNav } from './components/main-nav';
 import TeamSwitcher from './components/availability-toggle';
 import { UserNav } from './components/user-nav';
@@ -29,7 +29,7 @@ export async function loader() {
 	useGlobalStore.setState({
 		user: me.data,
 		conversations: (
-			await supabase
+			await getSupabase(token)
 				.from('Tickets')
 				.select('*', { count: 'exact' })
 				.eq('status', 'in progress')
@@ -66,7 +66,7 @@ export default function RootRoute() {
 				)
 				.subscribe();
 		}
-	});
+	}, []);
 
 	return (
 		<div className="hidden flex-col md:flex">

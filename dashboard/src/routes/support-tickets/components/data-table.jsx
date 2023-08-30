@@ -21,12 +21,14 @@ import {
 
 import { DataTablePagination } from './data-table-pagination';
 import { DataTableToolbar } from './data-table-toolbar';
+import { useNavigate } from 'react-router-dom';
 
 export function DataTable({ columns, data }) {
 	const [rowSelection, setRowSelection] = React.useState({});
 	const [columnVisibility, setColumnVisibility] = React.useState({});
 	const [columnFilters, setColumnFilters] = React.useState([]);
 	const [sorting, setSorting] = React.useState([]);
+	const navigate = useNavigate();
 
 	const table = useReactTable({
 		data,
@@ -49,7 +51,6 @@ export function DataTable({ columns, data }) {
 		getFacetedRowModel: getFacetedRowModel(),
 		getFacetedUniqueValues: getFacetedUniqueValues(),
 	});
-
 	return (
 		<div className="space-y-4">
 			<DataTableToolbar table={table} />
@@ -82,9 +83,20 @@ export function DataTable({ columns, data }) {
 									data-state={
 										row.getIsSelected() && 'selected'
 									}
+									className="hover:cursor-pointer"
 								>
 									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id}>
+										<TableCell
+											key={cell.id}
+											onClick={() => {
+												if (
+													row.original.status ===
+													'in progress'
+												) {
+													navigate('/conversations');
+												}
+											}}
+										>
 											{flexRender(
 												cell.column.columnDef.cell,
 												cell.getContext(),

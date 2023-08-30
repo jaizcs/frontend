@@ -94,7 +94,6 @@ export const columns = [
 			<DataTableColumnHeader column={column} title="Assigned To" />
 		),
 		cell: ({ row }) => {
-			console.log(row.getValue('assignee')?.name);
 			return (
 				<div className="flex w-[100px] items-center">
 					<span>{row.getValue('assignee')?.name}</span>
