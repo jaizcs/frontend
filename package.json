@@ -3,7 +3,8 @@
 	"workspaces": [
 		"dashboard",
 		"widget",
-		"website"
+		"website",
+		"website2"
 	],
 	"engines": {
 		"node": ">=18"
