@@ -236,7 +236,6 @@ function ChatBox() {
 							filter: `TicketId=eq.${ticket.id}`,
 						},
 						async (payload) => {
-							console.log(payload);
 							await initMessages(ticket.id);
 						},
 					)
