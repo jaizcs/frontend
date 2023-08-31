@@ -1,9 +1,10 @@
 import axios from 'axios';
+import * as React from 'react';
 import { useLoaderData } from 'react-router-dom';
 
 import { ChatBox } from '@/components/chat';
 import { BASE_URL } from '@/lib/config';
-import { getSupabase } from '@/lib/supabase';
+import { getSupabase, useSupabase } from '@/lib/supabase';
 
 export const loader = async () => {
 	const token = localStorage.getItem('accessToken');
@@ -39,6 +40,28 @@ export const loader = async () => {
 
 export function ConversationsRoute() {
 	const conversations = useLoaderData();
+	const supabase = useSupabase();
+
+	React.useEffect(() => {
+		// subscribe
+		if (supabase) {
+			supabase.setRealtimeAuth();
+
+			supabase
+				.channel(`conversations`)
+				.on(
+					'postgres_changes',
+					{
+						event: 'UPDATE',
+						schema: 'public',
+						table: 'Tickets',
+						filter: `UserId=eq.${conversations.UserId}`,
+					},
+					() => navigate('/conversations'),
+				)
+				.subscribe();
+		}
+	});
 
 	return (
 		<main className="h-full overflow-hidden">
@@ -48,7 +71,6 @@ export function ConversationsRoute() {
 						<ChatBox
 							key={conversation.id}
 							ticketId={conversation.id}
-							userId={conversation.UserId}
 							initialMessages={conversation.Messages.sort(
 								(a, b) => a.id - b.id,
 							)}
