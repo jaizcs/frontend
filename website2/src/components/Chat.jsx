@@ -191,7 +191,7 @@ export function Chat() {
 
 function LoaderEllipsis() {
 	return (
-		<div className="loader-ellipsis relative flex h-5 w-20 items-center ">
+		<div className="relative h-5 w-20 flex items-center loader-ellipsis ">
 			<div></div>
 			<div></div>
 			<div></div>
@@ -222,6 +222,8 @@ function ChatBox() {
 			await initMessages(ticket.id);
 
 			if (supabase) {
+				supabase.setRealtimeAuth();
+
 				supabase
 					.channel(`messages`)
 					.on(
@@ -257,7 +259,7 @@ function ChatBox() {
 	return (
 		<>
 			<Card className="relative w-[360px]">
-				<CardHeader className="absolute inset-x-0 top-0 flex flex-row items-center bg-white bg-opacity-90 backdrop-blur-md">
+				<CardHeader className="absolute top-0 inset-x-0 flex flex-row items-center bg-white backdrop-blur-md bg-opacity-90">
 					<div className="flex items-center space-x-4">
 						<Avatar>
 							<AvatarImage
@@ -279,7 +281,7 @@ function ChatBox() {
 				</CardHeader>
 				<CardContent
 					ref={scrollAreaRef}
-					className="max-h-[640px] min-h-[160px] overflow-scroll px-6 py-24"
+					className="px-6 py-24 min-h-[160px] max-h-[640px] overflow-scroll"
 				>
 					<div className="space-y-4">
 						{messages.map((message, index, arr) =>
@@ -305,7 +307,7 @@ function ChatBox() {
 						{isLoading ? (
 							<div
 								className={cn(
-									'flex w-max max-w-[80%] flex-col gap-2 rounded-lg bg-muted px-3 py-2 text-sm',
+									'flex w-max max-w-[80%] flex-col gap-2 rounded-lg px-3 py-2 text-sm bg-muted',
 								)}
 							>
 								<LoaderEllipsis />
@@ -313,7 +315,7 @@ function ChatBox() {
 						) : null}
 					</div>
 				</CardContent>
-				<CardFooter className="absolute inset-x-0 bottom-0 bg-white bg-opacity-90 pt-6 backdrop-blur-md">
+				<CardFooter className="absolute bottom-0 inset-x-0 pt-6 bg-white backdrop-blur-md bg-opacity-90">
 					<form
 						onSubmit={(event) => {
 							event.preventDefault();
@@ -355,7 +357,7 @@ export function Feedback() {
 	return (
 		<div
 			className={cn(
-				'flex w-max max-w-[80%] flex-col gap-2 rounded-lg bg-muted px-3 py-2 text-sm',
+				'flex w-max max-w-[80%] flex-col gap-2 rounded-lg px-3 py-2 text-sm bg-muted',
 			)}
 		>
 			<p>Are you satisfied with the solution provided?</p>
