@@ -45,6 +45,8 @@ try {
 	user = null;
 }
 
+let supabaseChannel;
+
 const useChatStore = create((set) => ({
 	messages: [],
 	ticket: ticket,
@@ -148,6 +150,9 @@ const useChatStore = create((set) => ({
 
 		localStorage.removeItem('yujin:ticket');
 		localStorage.removeItem('yujin:user');
+		ticket = undefined;
+		user = undefined;
+		supabaseChannel = undefined;
 
 		setTimeout(() => {
 			set({
@@ -221,10 +226,10 @@ function ChatBox() {
 		(async () => {
 			await initMessages(ticket.id);
 
-			if (supabase) {
+			if (supabase && !supabaseChannel) {
 				supabase.setRealtimeAuth();
 
-				supabase
+				supabaseChannel = supabase
 					.channel(`messages`)
 					.on(
 						'postgres_changes',
