@@ -8,15 +8,15 @@ import { getSupabase } from '@/lib/supabase';
 export const loader = async () => {
 	const token = localStorage.getItem('accessToken');
 
-	const supabase = getSupabase(token);
+	const supabase = getSupabase();
 
 	const { data: user } = await axios.get(BASE_URL + '/users/me', {
 		headers: {
-			Authorization: token,
+			authorization: token,
 		},
 	});
 
-	const { data: conversations, error } = await supabase
+	const { data: conversations } = await supabase
 		.from('Tickets')
 		.select(
 			`
