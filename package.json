@@ -11,8 +11,7 @@
 	},
 	"type": "module",
 	"scripts": {
-		"format": "prettier -uw .",
-		"prepare": "husky install"
+		"format": "prettier -uw ."
 	},
 	"devDependencies": {
 		"@shadcn/ui": "^0.0.4",
