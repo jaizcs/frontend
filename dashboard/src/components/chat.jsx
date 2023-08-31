@@ -16,11 +16,9 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useNavigate } from 'react-router-dom';
 
-export function ChatBox({ ticketId, userId, initialMessages }) {
+export function ChatBox({ ticketId, initialMessages }) {
 	const supabase = useSupabase();
-	const navigate = useNavigate();
 
 	const [input, setInput] = React.useState('');
 	const inputLength = input.trim().length;
@@ -62,16 +60,6 @@ export function ChatBox({ ticketId, userId, initialMessages }) {
 
 			supabase
 				.channel(`#${ticketId}-messages`)
-				.on(
-					'postgres_changes',
-					{
-						event: 'UPDATE',
-						schema: 'public',
-						table: 'Tickets',
-						filter: `UserId=eq.${userId}`,
-					},
-					() => navigate('/conversations'),
-				)
 				.on(
 					'postgres_changes',
 					{
