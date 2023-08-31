@@ -148,12 +148,14 @@ const useChatStore = create((set) => ({
 
 		localStorage.removeItem('yujin:ticket');
 		localStorage.removeItem('yujin:user');
+		user = undefined;
 		supabaseChannel = undefined;
 
 		setTimeout(() => {
 			set({
 				messages: [],
 				ticket: null,
+				user: null,
 				isOpen: false,
 				isLoading: false,
 			});
@@ -243,7 +245,7 @@ function ChatBox() {
 						if (status === 'SUBSCRIBED') {
 							setTimeout(() => {
 								setIsLoading(false);
-							}, 500);
+							}, 2000);
 						}
 					});
 			}
