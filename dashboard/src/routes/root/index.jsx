@@ -59,7 +59,6 @@ export default function RootRoute() {
 	const user = useGlobalStore((store) => store.user);
 	const navigate = useNavigate();
 	const { state } = useNavigation();
-	const href = useHref();
 	const supabase = useSupabase();
 
 	useEffect(() => {
@@ -67,11 +66,11 @@ export default function RootRoute() {
 			supabase.setRealtimeAuth();
 
 			supabase
-				.channel('schema-db-changes')
+				.channel('conversations')
 				.on(
 					'postgres_changes',
 					{
-						event: 'UPDATE',
+						event: '*',
 						schema: 'public',
 						table: 'Tickets',
 						filter:
@@ -79,7 +78,7 @@ export default function RootRoute() {
 								? `UserId=eq.${user.id}`
 								: undefined,
 					},
-					() => navigate(href),
+					() => navigate(window.location.pathname),
 				)
 				.subscribe();
 		}
