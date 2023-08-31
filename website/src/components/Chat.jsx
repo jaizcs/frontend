@@ -222,6 +222,8 @@ function ChatBox() {
 			await initMessages(ticket.id);
 
 			if (supabase) {
+				supabase.setRealtimeAuth();
+
 				supabase
 					.channel(`messages`)
 					.on(
