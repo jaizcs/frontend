@@ -23,8 +23,10 @@ import { useSearchParams } from 'react-router-dom';
 
 export function DataTableFacetedFilter({ column, title, options }) {
 	const facets = column?.getFacetedUniqueValues();
-	const selectedValues = new Set(column?.getFilterValue());
 	const [searchParams, setSearchParams] = useSearchParams();
+	const selectedValues = new Set(
+		searchParams.get('status') ? searchParams.get('status').split(',') : [],
+	);
 
 	return (
 		<Popover>

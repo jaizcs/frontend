@@ -18,7 +18,7 @@ export const router = createBrowserRouter([
 			if (!token) {
 				return redirect('/sign-in');
 			}
-			return redirect('/support-tickets');
+			return redirect('/support-tickets?status=in+progress');
 		},
 		path: '/',
 	},

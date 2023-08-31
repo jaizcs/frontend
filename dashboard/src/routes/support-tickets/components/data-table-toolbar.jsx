@@ -1,10 +1,8 @@
 import { Cross2Icon } from '@radix-ui/react-icons';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { DataTableViewOptions } from './data-table-view-options';
-
-import { priorities, statuses } from '../data/data';
+import { statuses } from '../data/data';
 import { DataTableFacetedFilter } from './data-table-faceted-filter';
 import { useSearchParams } from 'react-router-dom';
 
@@ -15,7 +13,7 @@ export function DataTableToolbar({ table }) {
 	return (
 		<div className="flex items-center justify-between">
 			<div className="flex flex-1 items-center space-x-2">
-				<Input
+				{/* <Input
 					placeholder="Filter tasks..."
 					value={
 						table.getColumn('description')?.getFilterValue() ?? ''
@@ -26,7 +24,7 @@ export function DataTableToolbar({ table }) {
 							?.setFilterValue(event.target.value)
 					}
 					className="h-8 w-[150px] lg:w-[250px]"
-				/>
+				/> */}
 				{table.getColumn('status') && (
 					<DataTableFacetedFilter
 						column={table.getColumn('status')}

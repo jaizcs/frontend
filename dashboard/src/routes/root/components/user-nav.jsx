@@ -44,7 +44,7 @@ export function UserNav() {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-56" align="end" forceMount>
-				<DropdownMenuItem
+				{/* <DropdownMenuItem
 					onClick={() => {
 						navigate('/settings');
 					}}
@@ -52,7 +52,7 @@ export function UserNav() {
 				>
 					Settings
 				</DropdownMenuItem>
-				<DropdownMenuSeparator />
+				<DropdownMenuSeparator /> */}
 				<DropdownMenuItem
 					onClick={() => signOut()}
 					className="cursor-pointer"
