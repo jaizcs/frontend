@@ -213,7 +213,6 @@ function ChatBox() {
 	const isLoading = useChatStore((store) => store.isLoading);
 	const setIsLoading = useChatStore((store) => store.setIsLoading);
 	const initMessages = useChatStore((store) => store.initMessages);
-	const addMessage = useChatStore((store) => store.addMessage);
 	const sendMessage = useChatStore((store) => store.sendMessage);
 
 	const scrollAreaRef = React.useRef();
@@ -236,7 +235,6 @@ function ChatBox() {
 							filter: `TicketId=eq.${ticket.id}`,
 						},
 						async (payload) => {
-							console.log(payload);
 							await initMessages(ticket.id);
 						},
 					)

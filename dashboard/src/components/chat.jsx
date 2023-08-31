@@ -81,7 +81,6 @@ export function ChatBox({ ticketId, userId, initialMessages }) {
 						filter: `TicketId=eq.${ticketId}`,
 					},
 					(payload) => {
-						console.log(payload);
 						setMessages((old) => [
 							...old,
 							{
