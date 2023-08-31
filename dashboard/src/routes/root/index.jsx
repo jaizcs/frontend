@@ -1,12 +1,20 @@
 import axios from 'axios';
 import { useEffect } from 'react';
-import { Link, Outlet, redirect, useNavigate, useHref } from 'react-router-dom';
+import {
+	Link,
+	Outlet,
+	redirect,
+	useNavigate,
+	useHref,
+	useNavigation,
+} from 'react-router-dom';
 
 import { useGlobalStore } from '@/store';
 import { useSupabase, getSupabase } from '@/lib/supabase';
 import { MainNav } from './components/main-nav';
 import TeamSwitcher from './components/availability-toggle';
 import { UserNav } from './components/user-nav';
+import { Loader2 } from 'lucide-react';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -50,6 +58,7 @@ export async function loader() {
 export default function RootRoute() {
 	const user = useGlobalStore((store) => store.user);
 	const navigate = useNavigate();
+	const { state } = useNavigation();
 	const href = useHref();
 	const supabase = useSupabase();
 
@@ -91,7 +100,13 @@ export default function RootRoute() {
 					</div>
 				</div>
 			</div>
-			<Outlet />
+			{state === 'loading' ? (
+				<main className="flex-1 flex items-center justify-center">
+					<Loader2 size={32} className="animate-spin" />
+				</main>
+			) : (
+				<Outlet />
+			)}
 		</div>
 	);
 }
