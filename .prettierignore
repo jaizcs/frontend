@@ -1,0 +1,10 @@
+# .gitignore
+**/.cache
+**/.DS_Store
+**/.env
+**/.env.*
+!**/.env.example
+**/.next
+**/dist
+**/node_modules
+**/*.log
