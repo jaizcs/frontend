@@ -148,8 +148,6 @@ const useChatStore = create((set) => ({
 
 		localStorage.removeItem('yujin:ticket');
 		localStorage.removeItem('yujin:user');
-		ticket = undefined;
-		user = undefined;
 		supabaseChannel = undefined;
 
 		setTimeout(() => {
