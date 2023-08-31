@@ -58,6 +58,8 @@ export function ChatBox({ ticketId, userId, initialMessages }) {
 	React.useEffect(() => {
 		// subscribe
 		if (supabase) {
+			supabase.setRealtimeAuth();
+
 			supabase
 				.channel('messages')
 				.on(

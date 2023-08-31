@@ -55,6 +55,8 @@ export default function RootRoute() {
 
 	useEffect(() => {
 		if (supabase) {
+			supabase.setRealtimeAuth();
+
 			supabase
 				.channel('schema-db-changes')
 				.on(
