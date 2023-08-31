@@ -14,7 +14,7 @@ export const getSupabase = () => {
 		ticket = {};
 	}
 
-	if (ticket && ticket.accessToken) {
+	if (!supabase && ticket && ticket.accessToken) {
 		supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 			auth: {
 				autoRefreshToken: false,
@@ -27,11 +27,11 @@ export const getSupabase = () => {
 				},
 			},
 		});
-	}
 
-	supabase.setRealtimeAuth = () => {
-		supabase.realtime.setAuth(ticket.accessToken);
-	};
+		supabase.setRealtimeAuth = () => {
+			supabase.realtime.setAuth(ticket.accessToken);
+		};
+	}
 
 	return supabase;
 };
