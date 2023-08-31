@@ -61,7 +61,7 @@ export function ChatBox({ ticketId, userId, initialMessages }) {
 			supabase.setRealtimeAuth();
 
 			supabase
-				.channel('messages')
+				.channel(`#${ticketId}-messages`)
 				.on(
 					'postgres_changes',
 					{
@@ -81,6 +81,7 @@ export function ChatBox({ ticketId, userId, initialMessages }) {
 						filter: `TicketId=eq.${ticketId}`,
 					},
 					(payload) => {
+						console.log(payload);
 						setMessages((old) => [
 							...old,
 							{

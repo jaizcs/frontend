@@ -45,6 +45,8 @@ try {
 	user = null;
 }
 
+let supabaseChannel;
+
 const useChatStore = create((set) => ({
 	messages: [],
 	ticket: ticket,
@@ -112,8 +114,6 @@ const useChatStore = create((set) => ({
 			.eq('TicketId', ticketId)
 			.order('id', { ascending: true });
 
-		console.log(messages);
-
 		set({
 			messages,
 		});
@@ -148,6 +148,9 @@ const useChatStore = create((set) => ({
 
 		localStorage.removeItem('yujin:ticket');
 		localStorage.removeItem('yujin:user');
+		ticket = undefined;
+		user = undefined;
+		supabaseChannel = undefined;
 
 		setTimeout(() => {
 			set({
@@ -221,10 +224,10 @@ function ChatBox() {
 		(async () => {
 			await initMessages(ticket.id);
 
-			if (supabase) {
+			if (supabase && !supabaseChannel) {
 				supabase.setRealtimeAuth();
 
-				supabase
+				supabaseChannel = supabase
 					.channel(`messages`)
 					.on(
 						'postgres_changes',
@@ -234,7 +237,8 @@ function ChatBox() {
 							table: 'Messages',
 							filter: `TicketId=eq.${ticket.id}`,
 						},
-						async () => {
+						async (payload) => {
+							console.log(payload);
 							await initMessages(ticket.id);
 						},
 					)
@@ -247,7 +251,7 @@ function ChatBox() {
 					});
 			}
 		})();
-	}, [supabase, ticket, setIsLoading, initMessages, addMessage]);
+	}, []);
 
 	React.useEffect(() => {
 		if (scrollAreaRef.current) {
