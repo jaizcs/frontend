@@ -13,7 +13,7 @@ export function MainNav({ className, ...props }) {
 			{...props}
 		>
 			<NavLink
-				to="/support-tickets"
+				to="/support-tickets?status=in+progress"
 				className={({ isActive, isPending }) =>
 					cn(
 						'text-sm font-medium transition-colors hover:text-primary',
