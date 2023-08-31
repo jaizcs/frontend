@@ -114,8 +114,6 @@ const useChatStore = create((set) => ({
 			.eq('TicketId', ticketId)
 			.order('id', { ascending: true });
 
-		console.log(messages);
-
 		set({
 			messages,
 		});
@@ -239,7 +237,8 @@ function ChatBox() {
 							table: 'Messages',
 							filter: `TicketId=eq.${ticket.id}`,
 						},
-						async () => {
+						async (payload) => {
+							console.log(payload);
 							await initMessages(ticket.id);
 						},
 					)
@@ -252,7 +251,7 @@ function ChatBox() {
 					});
 			}
 		})();
-	}, [supabase, ticket, setIsLoading, initMessages, addMessage]);
+	}, []);
 
 	React.useEffect(() => {
 		if (scrollAreaRef.current) {
