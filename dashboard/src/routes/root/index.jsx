@@ -78,7 +78,13 @@ export default function RootRoute() {
 								? `UserId=eq.${user.id}`
 								: undefined,
 					},
-					() => navigate(window.location.pathname),
+					() =>
+						navigate(
+							window.location.pathname + window.location.search,
+							{
+								replace: true,
+							},
+						),
 				)
 				.subscribe();
 		}
